@@ -1,7 +1,7 @@
 <template>
     <nav>
         <ul>
-            <router-link to="/index" tag="li" activeClass="cur-sel" ><span>精选</span></router-link>
+            <router-link to="/home" tag="li" activeClass="cur-sel" ><span>精选</span></router-link>
             <router-link to="/item/women" tag="li" activeClass="cur-sel" ><span>女装</span></router-link>
             <router-link to="/item/men" tag="li" activeClass="cur-sel" ><span>男装</span></router-link>
             <router-link to="/item/food" tag="li" activeClass="cur-sel" ><span>美食</span></router-link>
@@ -14,27 +14,32 @@
         <router-link to="" tag="a" class="more"><span class="iconfont icon-more" @click="isshow=true;run=false"></span></router-link>
         <div class="item-more" v-if="isshow" @click="isshow=true">
             <h3>选择分类<span @click.stop="isshow=false">收起</span></h3>  
-            <itemMore v-on:click="isshow=true"></itemMore>
+            <itemMore v-on:click="isshow=true" :itemlists="itemlists"></itemMore>
         </div>
     </nav>    
 </template>
 <script>
+import axios from 'axios';
 import itemMore from './itemMore'
 export default {
     data(){
         return{
             isshow: false,
             run: true,
+            itemlists:[],     //navbar更多数据
         }
     },
     mounted(){
-        console.log(this.run)
         document.body.onclick = ()=>{
             if(this.run){
                 this.isshow = false
             }
             this.run = true;
         }
+        axios.get('/index.php?r=class/type').then(res=>{
+            console.log(res.data.data)
+            this.itemlists = res.data.data;
+        })
     },
     components:{
         itemMore,
@@ -46,10 +51,8 @@ export default {
         height: 40px;
         line-height: 40px;
         display: flex;
-        position: fixed;
         top: .45rem;
         width: 100%;
-        z-index: 10;
         background: #fff;
         a{
             display: flex;
@@ -87,15 +90,17 @@ export default {
         }
         div.item-more{
             position: absolute;
-            top: 0;
+            top: .45rem;
             left: 0;
             width: 100%;
-            background: #fff;
+            background: rgba(000, 000, 000, .5);
+            height: 667px;
             h3{
                 padding: 0 .1rem;
                 font-weight: 600;
                 font-size: 14px;
                 border-bottom: 1px solid #cccccc;
+                background: #fff;
                 span{
                     float: right;
                     // padding-left: .1rem; 

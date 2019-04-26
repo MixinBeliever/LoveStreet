@@ -17,9 +17,6 @@ export default {
     header{
         height: 45px;
         background-image: linear-gradient(to right, #fba958, #fa4fbd);
-        position: fixed;
-        top: 0;
-        z-index: 10;
         width: 100%;
         ul{
             height: 100%;

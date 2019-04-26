@@ -1,7 +1,7 @@
 <template>
     <footer>
         <ul>
-            <router-link to="/index" tag="li" activeClass="footer-active"><span class="iconfont icon-home"></span>首页</router-link>
+            <router-link to="/home" tag="li" activeClass="footer-active"><span class="iconfont icon-home"></span>首页</router-link>
             <router-link to="/mail" tag="li" activeClass="footer-active"><span class="iconfont icon-xingxing"></span>9.9邮</router-link>
             <router-link to="/sort" tag="li" activeClass="footer-active"><span class="iconfont icon-taobao"></span>分类</router-link>
             <router-link to="/shopcar" tag="li" activeClass="footer-active"><span class="iconfont icon-shopping"></span>购物车</router-link>

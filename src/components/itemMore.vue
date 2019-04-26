@@ -1,41 +1,9 @@
 <template>
     <div>
         <ul>
-            <li>
-                <img src="https://img.alicdn.com/imgextra/i1/2053469401/TB2n7WyHN9YBuNjy0FfXXXIsVXa-2053469401.png"/>
-                <span>精选</span>
-            </li>
-            <li>
-                <img src="https://img.alicdn.com/imgextra/i1/2053469401/TB2n7WyHN9YBuNjy0FfXXXIsVXa-2053469401.png"/>
-                <span>精选</span>
-            </li>
-            <li>
-                <img src="https://img.alicdn.com/imgextra/i1/2053469401/TB2n7WyHN9YBuNjy0FfXXXIsVXa-2053469401.png"/>
-                <span>精选</span>
-            </li>
-            <li>
-                <img src="https://img.alicdn.com/imgextra/i1/2053469401/TB2n7WyHN9YBuNjy0FfXXXIsVXa-2053469401.png"/>
-                <span>精选</span>
-            </li>
-            <li>
-                <img src="https://img.alicdn.com/imgextra/i1/2053469401/TB2n7WyHN9YBuNjy0FfXXXIsVXa-2053469401.png"/>
-                <span>精选</span>
-            </li>
-            <li>
-                <img src="https://img.alicdn.com/imgextra/i1/2053469401/TB2n7WyHN9YBuNjy0FfXXXIsVXa-2053469401.png"/>
-                <span>精选</span>
-            </li>
-            <li>
-                <img src="https://img.alicdn.com/imgextra/i1/2053469401/TB2n7WyHN9YBuNjy0FfXXXIsVXa-2053469401.png"/>
-                <span>精选</span>
-            </li>
-            <li>
-                <img src="https://img.alicdn.com/imgextra/i1/2053469401/TB2n7WyHN9YBuNjy0FfXXXIsVXa-2053469401.png"/>
-                <span>精选</span>
-            </li>
-            <li>
-                <img src="https://img.alicdn.com/imgextra/i1/2053469401/TB2n7WyHN9YBuNjy0FfXXXIsVXa-2053469401.png"/>
-                <span>精选</span>
+            <li v-for="item in itemlists" :key="item.id">
+                <img :src="item.icon"/>
+                <span>{{item.name}}</span>
             </li>
         </ul> 
     </div>
@@ -43,13 +11,14 @@
 
 <script>
 export default {
-
+    props: ["itemlists"]
 }
 </script>
 
 <style lang="scss" scoped>
     div{
         padding: .2rem;
+        background: #ffffff;
         ul{
             display: flex;
             flex-wrap: wrap;

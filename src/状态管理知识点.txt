@@ -1,0 +1,223 @@
+﻿0. vue add vuex 能够自动生成代码
+
+1. Vuex 是一个专为 Vue.js 应用程序开发的状态管理模式。它采用集中式存储管理应用的所有组件的状态。(他是集中管理我们的状态的,一般让咱们实现两个功能,1.把共享状态存到store中 做非父子通信;2.缓存我们后端的数据,做状态快照。(订单详情页面不适合缓存，实时更新的不建议))
+	vuex实现流程：component dispatch
+		mutation 做代码调试 记录了所有状态值。
+
+	以下状态管理
+	main.js文件中
+		注册store
+	store.js文件中
+		import Vue from 'vue'
+		import Vuex from 'vuex'
+		Vue.use(Vuex)
+		export default new Vuex.Store({
+			//共享的state 将来可以吧组建的状态放到store, store是独立与组件之外的，任何组件都可以访问这个store
+			state: {
+				isShowHeaderBar: true 
+			},
+			mutations: {
+				hideHeaderBar(state,data){  //自动得到一个形参state 可以传参 
+					state.isShowHeaderBar = false;
+				},
+				showHeaderBar(state){
+					state.isShowHeaderBar = true;
+				}
+			},
+			actions: {
+
+			}
+		})
+	组件中 （进入到那个组件需要隐藏tabbar的）
+		mounted () {
+			//this.$store.state.hideMaizuoTabbar = false; 作者建议不要直接修改状态！！！
+			//这里不要直接发送ajax，提交到mutation中， mutation是唯一修改状态的地方,这里可以被监控（vue devtools调试）
+			this.$store.commit("hideMaizuoTabbar",'123'); //提交的是一个方法 mutation中会自动触发这个方法
+		}
+		destroyed(){
+			//离开这个组件时需要的操作
+			this.$store.commit("showMaizuoTabbar",'123');
+		}
+	store.js文件中
+		mutations: {
+			hideMaizuoTabbar(state,data){  //会自动得到一个形参state, 可以接收参数。 
+				state.istabbar = false;
+			},
+			showMaizuoTabbar(){
+				state.istabbar = true;
+			}
+		}
+	App.js文件中 (能够控制tabbar的显示或隐藏的组件中)
+		<template>
+			<div>
+				<tabbar v-show="this.$store.state.isTabbarShow"></tabbar> //模板语法过重难以维护，下面会进行简写
+				<!-- 路由容器 -->
+				<router-view></router-view>
+			</div>
+		</template>
+		<script >
+			import Tabbar from './components/Tabbar'
+			import './assets/iconfont/iconfont.css' //引入iconfont css文件
+			export default {
+				data () {
+					return {
+					}
+				},
+				methods: {
+				},
+				components: {
+					tabbar:Tabbar
+				},
+			}// ES6 导出标准
+		</script>
+	以上未涉及异步操作，单纯的做状态管理，不用action层就能够实现
+
+	以下实现状态缓存
+	组件中 （需要缓存数据的组件）
+		<template>
+			<div>
+				<ul>
+					<li v-for="data in this.$store.state.datalist" ></li>
+				</ul>
+			</div>
+		</template>
+		mounted () {
+				//这里不要直接发送ajax，提交到mutation中， mutation是唯一修改状态的地方,这里可以被监控（vue devtools调试）
+				if(this.$store.state.datalist.length === 0){
+					//dispatch到action中发送ajax请求，然后再commit
+					this.$store.dispatch("mutationgetcommingsoon")  //mutationgetcommingsoon函数 要定义在action中
+				}
+		}
+	store.js文件中
+		export default new Vuex.Store({
+			//共享的state 将来可以吧组建的状态放到store, store是独立与组件之外的，任何组件都可以访问这个store
+			state: {
+				isShowHeaderBar: true,
+				datalist: [], 	//这样只要datalist被改变  用到这个datalist的组件视图就要被重新渲染,不要赋值给组件中的状态,赋给向下传递的值，比如说传递遍历的数组
+			},
+			mutations: {
+				hideHeaderBar(state,data){  //自动得到一个形参state 可以传参 
+					state.isShowHeaderBar = false;
+				},
+				showHeaderBar(state){
+					state.isShowHeaderBar = true;
+				},
+				getcomingsoonmutation(state.data){		//mutation中得到传递过来的值并赋值给datalist状态
+					state.datalist = data;
+				}
+			},
+			actions: {
+				mutationgetcommingsoon(store){  //会自动得到store对象
+					axios({
+
+					}).then(res=>{
+						console.log(res.data); 			//返回的结果提交到mutation中
+						store.commit("getcomingsoonmutation",res.data.data)
+					})	
+				}
+			}
+		})
+	以上是状态缓存
+	
+	其他写法
+	App.js文件中 (能够控制tabbar的显示或隐藏的组件中)
+		<template>
+			<div>
+				<tabbar v-show="isTabbarShow"></tabbar> //模板语法用计算属性来简写 计算属性函数返回值是什么就是什么
+				<!-- 路由容器 -->
+				<router-view></router-view>
+			</div>
+		</template>
+		<script >
+			// import Vue from 'vue'
+			// Vue.component("child",child);//注册全局
+			import Tabbar from './components/Tabbar'
+			import { mapState } from 'vuex'
+			import './assets/iconfont/iconfont.css' //引入iconfont css文件
+			export default {
+				data () {
+					return {
+					}
+				},
+				methods: {
+				},
+				components: {
+					tabbar:Tabbar
+				},
+				// 计算属性写法一 效果一样
+				// computed:{
+				//   getTabbar(){
+				//     return this.$store.state.isTabbarShow
+				//   }
+				// }
+				computed:{
+					...mapState(["isTabbarShow"])   //需要导入 import {mapState} from "vuex"
+					// 返回一个对象，["isTabbarShow"] 将store中的状态切割出来
+				}
+				// mapState(["isTabbarShow"])  ==>  {isTabbarShow:true}
+				//不加... 相当于 computed:{isTabbarShow:true} 将来再有新的计算属性时没有办法再写入
+			}// ES6 导出标准
+		</script>
+	store.js文件中
+		import { HIDE_HEADER_BAR } from "./mutationType.js"
+		使用getters 对拿到的数据再次进行加工	,好比是state的计算属性
+			getters: {
+				getHotTop3(state){		//自动得到state
+					return state.datalist.map(item=>item.name)
+				}
+			}
+		mutations中
+			mutations: {
+				[HIDE_HEADER_BAR] 可以将hideHeaderBar替换
+				hideHeaderBar(state,data){  //自动得到一个形参state 可以传参 
+					state.isShowHeaderBar = false;
+				},
+				showHeaderBar(state){
+					state.isShowHeaderBar = true;
+				},
+				getcomingsoonmutation(state.data){		//mutation中得到传递过来的值并赋值给datalist状态
+					state.datalist = data;
+				}
+			},
+	mutationType.js文件中   项目中多少个使用mutation的一目了然 
+		const HIDE_HEADER_BAR = 'hideHeaderBar';  
+
+		export { HIDE_HEADER_BAR }
+		至此所有使用hideHeaderBar的地方都要引入这个文件并使用HIDE_HEADER_BAR常量
+	结束
+
+
+
+老师：
+	(1)state:单一状态树 ,每个应用将仅仅包含一个 store 实例。
+		* this.$store.state.状态名字  不要直接修改状态
+		* ...mapState(["title"])
+	(2)getters:可以从store 中的 state 中派生出一些状态，getters的返回值会根据它的依赖被缓存起来，且只有当它的依赖值发生了改变才会被重新计算。
+		*可以认为是 store 的计算属性
+		*this.$store.getters.计算属性名字
+		*...mapGetters(["getFilms"])
+
+	(3)mutations：更改 Vuex 的 store 中的状态的唯一方法是提交 mutation。
+		*常量的设计风格
+		[SOME_MUTATION] (state) {
+				// mutate state
+			}
+			*必须是同步函数
+		*this.$store.commit("type","payload");
+	
+	(4)actions: 
+		*Action 提交的是 mutation，而不是直接变更状态。
+		*Action 可以包含任意异步操作。
+	  *this.$store.dispatch("type","payload")
+	    
+	
+2. 注意:
+	(0)状态管理并不是所有的状态都要放入到store中进行管理，组件内部的状态继续在组件内部使用，共享的状态拿出来。
+
+	(1)应用层级的状态应该集中到单个 store 对象中。
+
+	(2)提交 mutation 是更改状态的唯一方法，并且这个过程是同步的。
+
+	(3)异步逻辑都应该封装到 action 里面。
+
+3. vue chrome devtools

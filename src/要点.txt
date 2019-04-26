@@ -1,3 +1,4 @@
 1.swiper
 2.axios
 3.cnpm i mint-ui -S
+4.node-sass需要cnpm单独处理

@@ -55,7 +55,10 @@ export default {
         this.loading = true;
         console.log('到底了')
         this.pagecount++;
-        fetch(`/index.php?r=index/ajaxnew&page=${this.pagecount}&cac_id=cXVlcnlUaGVuRmV0Y2g7NjszMjMwNzgyNTc3OmdoTW5qX1BMU1BLeGdLdnpaVmFJMEE7MzIzMDc3NzI1Njp5YVJ0Vm83QlNNeTNsMHdNenRfc1N3OzE2MjAyMTY0NDk6RjVXM2FnYUVRZm1wdFdrWnRveVYtQTsxNjIwMjI1MzQwOkNwRjljNndlUTQ2MXUtUHZ1TnRHblE7MzIzMDc4MjU3ODpnaE1ual9QTFNQS3hnS3Z6WlZhSTBBOzMyMzA3NzcyNTc6eWFSdFZvN0JTTXkzbDB3TXp0X3NTdzswOw%3D%3D`).then(res=>res.json()).then(res=>{
+        /**
+         * &cac_id=cXVlcnlUaGVuRmV0Y2g7NjszMjMwNzgyNTc3OmdoTW5qX1BMU1BLeGdLdnpaVmFJMEE7MzIzMDc3NzI1Njp5YVJ0Vm83QlNNeTNsMHdNenRfc1N3OzE2MjAyMTY0NDk6RjVXM2FnYUVRZm1wdFdrWnRveVYtQTsxNjIwMjI1MzQwOkNwRjljNndlUTQ2MXUtUHZ1TnRHblE7MzIzMDc4MjU3ODpnaE1ual9QTFNQS3hnS3Z6WlZhSTBBOzMyMzA3NzcyNTc6eWFSdFZvN0JTTXkzbDB3TXp0X3NTdzswOw%3D%3D
+         */
+        fetch(`/index.php?r=index/ajaxnew&page=${this.pagecount}`).then(res=>res.json()).then(res=>{
           console.log(res.data.data)
           let last = this.itemlists[this.itemlists.length - 1];
           

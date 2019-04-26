@@ -9,6 +9,15 @@ module.exports = {
                 //     '^/v4/api': '/v4/api'
                 //   }
             },
+            //http://m.biyao.com/classify 必要mail navbar导航
+            '/classify': {
+                target: 'http://m.biyao.com',
+                host: 'm.biyao.com',
+                changeOrigin: true
+                // pathRewrite: {
+                //     '^/v4/api': '/v4/api'
+                //   }
+            },
         }
     }
 }

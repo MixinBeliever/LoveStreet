@@ -1,27 +1,71 @@
 <template>
   <div id="app">
-    <headerBar></headerBar>
-    <navBar></navBar>
+    <headNavBar :headNavBarIsFixed="headNavBarIsFixed" :superHeadNavBarIsFixed="superHeadNavBarIsFixed" ref="scrolltop" v-if="this.$store.state.isShowHeaderBar"></headNavBar>
     <router-view></router-view>
+    <backTop v-show="backTopShow"></backTop>
     <footerBar></footerBar>
   </div>
 </template>
 
 <script>
 import footerBar from './components/footerBar'
-import headerBar from './components/headerBar'
-import navBar from './components/navBar'
+import headNavBar from './components/headNavBar'
+import backTop from './components/backTop'
+
+
 export default {
   data(){
     return{
+      backTopShow: false,
+      headNavBarIsFixed: false,
+      superHeadNavBarIsFixed: false
+    }
+  },
+  mounted(){
+    window.onmousewheel= (e)=>{
+      if (e.wheelDelta) {  //判断浏览器IE，谷歌滑轮事件             
+          if (e.wheelDelta > 0) { //当滑轮向上滚动时
+          console.log("???")
+            this.superHeadNavBarIsFixed = true;
+          }
+          if (e.wheelDelta < 0) { //当滑轮向下滚动时
+              // alert("滑轮向下滚动");
+            this.superHeadNavBarIsFixed = false;
+          }
+      } else if (e.detail) {  //Firefox滑轮事件
+          if (e.detail> 0) { //当滑轮向上滚动时
+              // alert("滑轮向上滚动");
+          }
+          if (e.detail< 0) { //当滑轮向下滚动时
+              // alert("滑轮向下滚动");
+          }
+      }
+    }
+    window.onscroll = ()=>{
+      //头部固定效果
+      if((document.documentElement.scrollTop || document.body.scrollTop) > 500){
+        this.headNavBarIsFixed = true;          //headerbar 是否fixed
+      }else{
+        // this.headNavBarIsFixed = false;
+      }
+      // if(document.documentElement.scrollTop || document.body.scrollTop>0){
+      //   this.headNavBarIsFixed = true;          //headerbar 是否fixed
+      // }
 
+      //以下是返回顶部的代码
+      if((document.documentElement.scrollTop || document.body.scrollTop) > 85){
+        this.backTopShow = true;
+      }else{
+        this.backTopShow = false;
+      }
     }
   },
   components:{
     footerBar,
-    headerBar,
-    navBar,
+    backTop,
+    headNavBar,
   },
+
 }
 </script>
 

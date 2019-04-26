@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Index from './views/Index.vue'
+import Home from './views/Home.vue'
 import Mail from './views/Mail.vue'
 import Sort from './views/Sort.vue'
 import Shopcar from './views/Shopcar.vue'
@@ -13,9 +13,9 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: '/index',
-      name: 'index',
-      component: Index
+      path: '/home',
+      name: 'home',
+      component: Home
     },
     {
       path: '/mail',
@@ -40,7 +40,7 @@ export default new Router({
     {
       path: '/',
       name: '',
-      redirect: '/index',
+      redirect: '/home',
     },
 
 
